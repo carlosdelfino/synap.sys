@@ -12,8 +12,15 @@
   </head>
 
   <body>
-
-    <!-- HEADER -->
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/pt_BR/sdk.js#xfbml=1&appId=351518334888083&version=v2.0";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+  <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
 		<a id="forkme_banner" href="http://goo.gl/D1829N">View on GitHub</a>
@@ -41,6 +48,12 @@
 <a name="controlado-com-arduino" class="anchor" href="#controlado-com-arduino"><span class="octicon octicon-link"></span></a>Controlado com Arduino,</h3>
 
 <p>consultoria em desenvolvimento Carlos Delfino.</p>
+      </section>
+      <section id="facebook_plugins" class="inner">
+	      <div class="fb-share-button" data-href="http://www.carlosdelfino.eti.br/synap.sys"></div>
+	      <div class="fb-like" data-href="http://www.carlosdelfino.eti.br/synap.sys" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+	      <div class="fb-comments" data-href="http://carlosdelfino.eti.br/synap.sys" data-numposts="5" data-colorscheme="light"></div>
+	      <div class="fb-post" data-href="http://www.carlosdelfino.eti.br/synap.sys" data-width="500"></div>
       </section>
     </div>
 
