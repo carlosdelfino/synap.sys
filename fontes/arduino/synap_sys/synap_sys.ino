@@ -51,27 +51,33 @@ void setup() {
   Serial.println("\n/init/end");
 }
 
-
 byte c;
+byte lastPin = 0;
 
 void loop() {
+  if(DEBUG)Serial.println("**********************");
   str = "/loop/";
   str += millis();
   Serial.println(str);
 
   c = 0;
 
-  resetPares();
+  resetPeers();
 
+  for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
+    bool nextOutput = false;
 
-  for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PARES; p_out++) {
+    // retorna o ultimo pino usado para o estado INPUT
+    pinMode(PINS[lastPin],INPUT);
+    lastPin = p_out;
+
     delay(DELAY_OUTPUT);
 
-    bool nextOutput = false;
     pinMode(PINS[p_out], OUTPUT);
     digitalWrite(PINS[p_out], HIGH);
 
-    if (DEBUG > 10) {
+
+    if (DEBUG_OUTPUT) {
       str = "\n/DEBUG/PIN/OUTPUT/";
       str += p_out;
       Serial.println(str);
@@ -81,6 +87,7 @@ void loop() {
       if (p_in == p_out) continue;
 
       delay(DELAY_INPUT);
+      bool pinState = digitalRead(PINS[p_in]);
 
       bool nextInput = false;
 
@@ -88,29 +95,29 @@ void loop() {
         str = "/DEBUG/PIN/";
         str += p_in;
         str += "/INPUT/";
-        str += digitalRead(PINS[p_in]) ? "ON" : "OFF";
+        str += pinState ? "ON" : "OFF";
         Serial.println(str);
       } // DEBUG
 
-      for (byte par = 0; par < NUM_PARES  && c < NUM_PARES; par++) {
-        if (DEBUG_PAR) {
-          str = "/DEBUG/PAR/";
-          str += par;
+      for (byte pair = 0; pair < NUM_PEERS  && c < NUM_PEERS; pair++) {
+        if (DEBUG_PAIR) {
+          str = "/DEBUG/PAIR/";
+          str += pair;
           str += "/";
-          str += parPin1(par);
+          str += pairPin1(pair);
           str += "/";
-          str += parPin2(par);
+          str += pairPin2(pair);
           Serial.println(str);
         }// DEBUG
 
-        if (usedPin(par,p_in)) {
+        if (usedPin(pair,p_in)) {
           nextInput = true;
           break;
         }
       }
       if (nextInput) continue;
 
-      if (digitalRead(PINS[p_in])) {
+      if (pinState) {
         if (DEBUG > 5) {
           str = "\n/DEBUG/PIN/ON/";
           str += p_out;
@@ -120,7 +127,7 @@ void loop() {
           Serial.println(str);
         } // DEBUG
 
-        checkPar(p_in, p_out);
+        setPair(p_in, p_out);
 
         nextOutput = true; // vou para a proxima entrada, apenas um par por output;
         break;
@@ -134,14 +141,15 @@ void loop() {
 }
 
 
-inline void resetPares() {
-  for (byte b = 0; b < NUM_PARES; b++) {
-    PARES(b, 255, 255);
+inline void resetPeers() {
+  for (byte b = 0; b < NUM_PEERS; b++) {
+    peers(b, 255, 255);
   }
 }
 
-void checkPar(byte p_in, byte p_out) {
-  PARES(c++, p_in, p_out);
+
+void setPair(byte p_in, byte p_out) {
+  peers(c++, p_in, p_out);
 
   str = "/PIN/";
   str += p_in;
@@ -149,4 +157,5 @@ void checkPar(byte p_in, byte p_out) {
   str += p_out;
   str += "/ON";
   Serial.println(str);
+  Serial.flush();
 }
