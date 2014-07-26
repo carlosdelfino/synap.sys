@@ -55,16 +55,17 @@ void setup() {
 byte c;
 
 void loop() {
+  if(DEBUG)Serial.println("**********************");
   str = "/loop/";
   str += millis();
   Serial.println(str);
 
   c = 0;
 
-  resetPares();
+  resetPeers();
 
 
-  for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PARES; p_out++) {
+  for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
     delay(DELAY_OUTPUT);
 
     bool nextOutput = false;
@@ -92,18 +93,18 @@ void loop() {
         Serial.println(str);
       } // DEBUG
 
-      for (byte par = 0; par < NUM_PARES  && c < NUM_PARES; par++) {
-        if (DEBUG_PAR) {
-          str = "/DEBUG/PAR/";
-          str += par;
+      for (byte pair = 0; pair < NUM_PEERS  && c < NUM_PEERS; pair++) {
+        if (DEBUG_PAIR) {
+          str = "/DEBUG/PAIR/";
+          str += pair;
           str += "/";
-          str += parPin1(par);
+          str += pairPin1(pair);
           str += "/";
-          str += parPin2(par);
+          str += pairPin2(pair);
           Serial.println(str);
         }// DEBUG
 
-        if (usedPin(par,p_in)) {
+        if (usedPin(pair,p_in)) {
           nextInput = true;
           break;
         }
@@ -120,7 +121,7 @@ void loop() {
           Serial.println(str);
         } // DEBUG
 
-        checkPar(p_in, p_out);
+        setaPar(p_in, p_out);
 
         nextOutput = true; // vou para a proxima entrada, apenas um par por output;
         break;
@@ -134,14 +135,14 @@ void loop() {
 }
 
 
-inline void resetPares() {
-  for (byte b = 0; b < NUM_PARES; b++) {
-    PARES(b, 255, 255);
+inline void resetPeers() {
+  for (byte b = 0; b < NUM_PEERS; b++) {
+    peers(b, 255, 255);
   }
 }
 
-void checkPar(byte p_in, byte p_out) {
-  PARES(c++, p_in, p_out);
+void setaPar(byte p_in, byte p_out) {
+  peers(c++, p_in, p_out);
 
   str = "/PIN/";
   str += p_in;

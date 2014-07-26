@@ -3,14 +3,14 @@
 // macros para ativacao de depuracao
 #define D_L_INIT   B00000001
 #define D_L_OUTPUT B00001000
-#define D_L_PAR    B00010000
+#define D_L_PAIR    B00010000
 #define D_L_INPUT  B00100000
-//#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAR | D_L_INPUT)
-#define DEBUG         ( D_L_OUTPUT | D_L_PAR )
+//#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
+#define DEBUG         ( D_L_OUTPUT | D_L_PAIR )
 //#define DEBUG         (0)
 #define DEBUG_INIT    (D_L_INIT   == (DEBUG & D_L_INIT ))
 #define DEBUG_OUTPUT  (D_L_OUTPUT == (DEBUG & D_L_OUTPUT))
-#define DEBUG_PAR     (D_L_PAR    == (DEBUG & D_L_PAR))
+#define DEBUG_PAIR     (D_L_PAIR    == (DEBUG & D_L_PAIR))
 #define DEBUG_INPUT   (D_L_INPUT  == (DEBUG & D_L_INPUT))
 
 
@@ -29,21 +29,21 @@ const byte POTS[]    = {A1, A2, A3, A4};
 
 const byte NUM_PINS  = sizeof(PINS) / sizeof(*PINS);
 const byte NUM_POTS  = sizeof(POTS) / sizeof(*POTS);
-const byte NUM_PARES = NUM_PINS / 2;
+const byte NUM_PEERS = NUM_PINS / 2;
 
-// DEFINICAO DO ARRAY QUE GUARDA PARES CONECTADOS
+// DEFINICAO DO ARRAY QUE GUARDA PEERS CONECTADOS
 #define PIN_1 0
 #define PIN_2 1
-byte pares[NUM_PARES][2];
-#define parFree(par) (pares[par][0] == 255 || pares[par][1] == 255)
-#define parUsed(par) (!parFree(par))
-#define parPin1(par) (pares[par][0])
-#define parPin2(par) (pares[par][1])
-#define PARES(par,pin_1,pin_2) do{\
-    pares[par][PIN_1] = pin_1;\
-    pares[par][PIN_2] = pin_2;\
+byte _peers[NUM_PEERS][2];
+#define pairFree(pair) (_peers[pair][0] == 255 || _peers[pair][1] == 255)
+#define pairUsed(pair) (!pairFree(pair))
+#define pairPin1(pair) (_peers[pair][0])
+#define pairPin2(pair) (_peers[pair][1])
+#define peers(pair,pin_1,pin_2) do{\
+    _peers[pair][PIN_1] = pin_1;\
+    _peers[pair][PIN_2] = pin_2;\
   }while(false);
-#define usedPin(par,pin)  (pares[par][PIN_1] == pin || pares[par][PIN_2] == pin)
+#define usedPin(pair,pin)  (_peers[pair][PIN_1] == pin || _peers[pair][PIN_2] == pin)
 
 
 
