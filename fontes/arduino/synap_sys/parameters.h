@@ -6,8 +6,8 @@
 #define D_L_PAR    B00010000
 #define D_L_INPUT  B00100000
 //#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAR | D_L_INPUT)
-#define DEBUG         ( D_L_OUTPUT | D_L_PAR )
-//#define DEBUG         (0)
+//#define DEBUG         ( D_L_OUTPUT | D_L_PAR )
+#define DEBUG         (0)
 #define DEBUG_INIT    (D_L_INIT   == (DEBUG & D_L_INIT ))
 #define DEBUG_OUTPUT  (D_L_OUTPUT == (DEBUG & D_L_OUTPUT))
 #define DEBUG_PAR     (D_L_PAR    == (DEBUG & D_L_PAR))
