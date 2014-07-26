@@ -51,8 +51,8 @@ void setup() {
   Serial.println("\n/init/end");
 }
 
-
 byte c;
+byte lastPin = 0;
 
 void loop() {
   if(DEBUG)Serial.println("**********************");
@@ -64,15 +64,20 @@ void loop() {
 
   resetPeers();
 
-
   for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
+    bool nextOutput = false;
+
+    // retorna o ultimo pino usado para o estado INPUT
+    pinMode(PINS[lastPin],INPUT);
+    lastPin = p_out;
+
     delay(DELAY_OUTPUT);
 
-    bool nextOutput = false;
     pinMode(PINS[p_out], OUTPUT);
     digitalWrite(PINS[p_out], HIGH);
 
-    if (DEBUG > 10) {
+
+    if (DEBUG_OUTPUT) {
       str = "\n/DEBUG/PIN/OUTPUT/";
       str += p_out;
       Serial.println(str);
@@ -82,6 +87,7 @@ void loop() {
       if (p_in == p_out) continue;
 
       delay(DELAY_INPUT);
+      bool pinState = digitalRead(PINS[p_in]);
 
       bool nextInput = false;
 
@@ -89,7 +95,7 @@ void loop() {
         str = "/DEBUG/PIN/";
         str += p_in;
         str += "/INPUT/";
-        str += digitalRead(PINS[p_in]) ? "ON" : "OFF";
+        str += pinState ? "ON" : "OFF";
         Serial.println(str);
       } // DEBUG
 
@@ -111,7 +117,7 @@ void loop() {
       }
       if (nextInput) continue;
 
-      if (digitalRead(PINS[p_in])) {
+      if (pinState) {
         if (DEBUG > 5) {
           str = "\n/DEBUG/PIN/ON/";
           str += p_out;
@@ -121,7 +127,7 @@ void loop() {
           Serial.println(str);
         } // DEBUG
 
-        setaPar(p_in, p_out);
+        setPair(p_in, p_out);
 
         nextOutput = true; // vou para a proxima entrada, apenas um par por output;
         break;
@@ -141,7 +147,8 @@ inline void resetPeers() {
   }
 }
 
-void setaPar(byte p_in, byte p_out) {
+
+void setPair(byte p_in, byte p_out) {
   peers(c++, p_in, p_out);
 
   str = "/PIN/";
@@ -150,4 +157,5 @@ void setaPar(byte p_in, byte p_out) {
   str += p_out;
   str += "/ON";
   Serial.println(str);
+  Serial.flush();
 }

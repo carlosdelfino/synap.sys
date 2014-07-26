@@ -1,20 +1,20 @@
 #include "Arduino.h"
 
 // macros para ativacao de depuracao
-#define D_L_INIT   B00000001
-#define D_L_OUTPUT B00001000
+#define D_L_INIT    B00000001
+#define D_L_OUTPUT  B00001000
 #define D_L_PAIR    B00010000
-#define D_L_INPUT  B00100000
-//#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
-#define DEBUG         ( D_L_OUTPUT | D_L_PAIR )
+#define D_L_INPUT   B00100000
+#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
+//#define DEBUG         ( D_L_OUTPUT | D_L_PAIR )
 //#define DEBUG         (0)
 #define DEBUG_INIT    (D_L_INIT   == (DEBUG & D_L_INIT ))
 #define DEBUG_OUTPUT  (D_L_OUTPUT == (DEBUG & D_L_OUTPUT))
-#define DEBUG_PAIR     (D_L_PAIR    == (DEBUG & D_L_PAIR))
+#define DEBUG_PAIR    (D_L_PAIR    == (DEBUG & D_L_PAIR))
 #define DEBUG_INPUT   (D_L_INPUT  == (DEBUG & D_L_INPUT))
 
 
-// identificacao dos pinos usados, 
+// identificacao dos pinos usados,
 // o mapeamento nao e direto o pino 1 nao e necessariamente o mesmo pino no arduino
 #if DEBUG > 0
 const byte PINS[]    = {2, 3, 4, 5, 6, 7};
@@ -27,7 +27,7 @@ const byte PINS[]    = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 const byte POTS[]    = {A1, A2, A3, A4};
 #endif
 
-const byte NUM_PINS  = sizeof(PINS) / sizeof(*PINS);
+const byte NUM_PINS  = sizeof(PINS) / sizeof(*PINS); // para saber o tamanho de um array
 const byte NUM_POTS  = sizeof(POTS) / sizeof(*POTS);
 const byte NUM_PEERS = NUM_PINS / 2;
 
@@ -40,8 +40,9 @@ byte _peers[NUM_PEERS][2];
 #define pairPin1(pair) (_peers[pair][0])
 #define pairPin2(pair) (_peers[pair][1])
 #define peers(pair,pin_1,pin_2) do{\
-    _peers[pair][PIN_1] = pin_1;\
-    _peers[pair][PIN_2] = pin_2;\
+    byte p = pair;\
+    _peers[p][PIN_1] = pin_1;\
+    _peers[p][PIN_2] = pin_2;\
   }while(false);
 #define usedPin(pair,pin)  (_peers[pair][PIN_1] == pin || _peers[pair][PIN_2] == pin)
 
