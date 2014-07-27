@@ -1,5 +1,6 @@
 #include "parameters.h"
 #include "peers.h"
+#include "pots.h"
 
 String str;
 
@@ -62,6 +63,7 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
+long potsOldValues[NUM_POTS];
 long lastShowTime, lastLoopPinsTime, lastLoopPotsTime;
 
 void loop() {
@@ -95,8 +97,28 @@ void loop() {
 
 }
 
+byte lastPotRead = 0;
 void loopPots() {
+  byte p;
+  if (lastPotRead++ < NUM_POTS)
+    p = lastPotRead;
+  else
+    p = lastPotRead = 0;
+    
+  signed long v = analogRead(POTS[p]);
+  signed long old = potsOldValues[p];
+
+
+  if (abs(old - v) > POT_LAG) {
+    String str = "/POT/";
+    str += p;
+    str += "/";
+    str += v;
+    Serial.println(str);
+    potsOldValues[p] = v;
+  }
 }
+
 
 void loopPins() {
   c = 0;
