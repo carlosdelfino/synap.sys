@@ -99,16 +99,27 @@ void loop() {
 
 byte lastPotRead = 0;
 void loopPots() {
-  byte p;
-  if (lastPotRead++ < NUM_POTS)
-    p = lastPotRead;
-  else
-    p = lastPotRead = 0;
+  byte p = lastPotRead++;
+  if (lastPotRead >= NUM_POTS)
+    lastPotRead = 0;
     
   signed long v = analogRead(POTS[p]);
   signed long old = potsOldValues[p];
-
-
+  if(DEBUG_POTS){
+    String str = "/DEBUG/POTS/";
+    str += p;
+    str += "/";
+    str += old;
+    str += "/";
+    str += v;
+    str += "/";
+    str += abs(old - v);
+    str += "/";
+    str += POT_LAG;
+    str += "/";
+    str += abs(old - v) > POT_LAG;
+  }
+  
   if (abs(old - v) > POT_LAG) {
     String str = "/POT/";
     str += p;

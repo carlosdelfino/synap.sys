@@ -9,6 +9,7 @@
 #define D_L_PAIR1   B00001000
 #define D_L_PAIR2   B00010000
 #define D_L_INPUT   B00100000
+#define D_L_POTS    B10000000
 
 //#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR1 | D_L_PAIR2 )
@@ -23,7 +24,7 @@
 #define DEBUG_PAIR2   (D_L_PAIR2  == (DEBUG & D_L_PAIR2))
 #define DEBUG_PAIR    (DEBUG_PAIR1 || DEBUG_PAIR2)
 #define DEBUG_INPUT   (D_L_INPUT  == (DEBUG & D_L_INPUT))
-
+#define DEBUG_POTS    (D_L_POTS   == (DEBUG & D_L_POTS))
 
 // identificacao dos pinos usados,
 // o mapeamento nao e direto o pino 1 nao e necessariamente o mesmo pino no arduino
