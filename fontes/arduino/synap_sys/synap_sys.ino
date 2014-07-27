@@ -58,15 +58,30 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
+long lastShowTime, lastLoopPinsTime;
 
 void loop() {
   if (DEBUG)Serial.println("**********************");
-  str = "/loop/time/";
-  str += millis();
-  Serial.println(str);
+  long showTime = millis();
+  if ((showTime - lastShowTime) > DELAY_SHOW_TIME) {
+    str = "/loop/time/";
+    str += showTime;
+    Serial.println(str);
+    lastShowTime = showTime;
+  }
 
+  long loopPinsTime = millis();
+  if (DELAY_LOOP_PINS < (loopPinsTime - lastLoopPinsTime)) {
+    loopPins();
+    lastLoopPinsTime = loopPinsTime;
+  }
+  
+  delay(DELAY_LOOP);
+
+}
+
+void loopPins() {
   c = 0;
-
 
   for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
     bool nextOutput = false;
@@ -144,10 +159,4 @@ void loop() {
 
   showPeers();
   movePeers();
-
-  delay(DELAY_LOOP);
 }
-
-
-
-
