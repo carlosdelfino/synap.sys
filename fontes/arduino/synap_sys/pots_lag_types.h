@@ -1,0 +1,27 @@
+#ifndef POTS_LAG_TYPES_H
+#define POTS_LAG_TYPES_H
+
+#define POT_LAG_TYPE_DEFAULT B00000000
+#define POT_LAG_TYPE_100     B00000100
+#define POT_LAG_TYPE_SIN_1   B10000001
+#define POT_LAG_TYPE_COS_1   B11000001
+
+#define  POT_TYPE_LOGA      1
+#define  POT_TYPE_LOGB      2
+#define  POT_TYPE_LINEAR    3
+
+#define POT_TYPE POT_TYPE_LOGA
+
+#define POT_LAG_TYPE POT_LAG_TYPE_100
+
+
+#ifndef POT_TYPE
+#define POT_TYPE POT_TYPE_LOGA
+#endif
+
+#ifndef POT_LAG_TYPE
+#define POT_LAG_TYPE POT_LAG_TYPE_DEFAULT
+#endif
+
+
+#endif

@@ -4,6 +4,8 @@
 
 String str;
 
+long potsOldValues[NUM_POTS] ;
+
 void setup() {
   if (USE_LED13_NO_TIME)
     pinMode(13, OUTPUT);
@@ -52,10 +54,30 @@ void setup() {
   str += DELAY_OUTPUT;
   str += "/";
   str += DELAY_LOOP;
+  str += "/";
+  str += DELAY_LOOP_PINS;
+  str += "/";
+  str += DELAY_LOOP_POTS;
   Serial.println(str);
 
+  Serial.println("\n/init/reset/oldpeers");
   resetOldPeers();
+  
+  Serial.println("\n/init/reset/peers");
   resetPeers();
+  
+  Serial.println("\n/init/pots");
+  for (byte p = 0; p < NUM_POTS; p++) {
+    long v = analogRead(POTS[p]);
+    if( POT_LAG_TYPE == POT_LAG_TYPE_100)
+      v = map(v,0,1023,0,100); 
+    String str = "/POT/";
+    str += p;
+    str += "/";
+    str += v;
+    Serial.println(str);
+    potsOldValues[p] = v;
+  }
 
   Serial.println("\n/init/end");
 
@@ -63,7 +85,6 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
-long potsOldValues[NUM_POTS];
 long lastShowTime, lastLoopPinsTime, lastLoopPotsTime;
 
 void loop() {
@@ -102,25 +123,51 @@ void loopPots() {
   byte p = lastPotRead++;
   if (lastPotRead >= NUM_POTS)
     lastPotRead = 0;
-    
-  signed long v = analogRead(POTS[p]);
-  signed long old = potsOldValues[p];
-  if(DEBUG_POTS){
+
+  long v = analogRead(POTS[p]);
+  long old = potsOldValues[p];
+  byte lag;
+  if(POT_LAG_TYPE == POT_LAG_TYPE_100){
+    v = map(v,0,1023,0,100);
+  }
+  byte a = abs(old - v);
+  
+  switch (POT_LAG_TYPE) {
+    case POT_LAG_TYPE_SIN_1:
+      if (a < 23)
+        lag = POT_LAG_MIN;
+      else if (a > 1000)
+        lag = POT_LAG_MAX;
+      else
+        lag  = abs(POT_LAG * sin(map(a, 0, 1023, 0, 360)));
+      break;
+    case POT_LAG_TYPE_100:
+      lag = 1;
+      break;
+    default:
+      lag  = POT_LAG;
+      break;
+  }
+
+  if (DEBUG_POTS) {
     String str = "/DEBUG/POTS/";
     str += p;
-    str += "/";
+    str += "/old/";
     str += old;
-    str += "/";
+    str += "/value/";
     str += v;
-    str += "/";
-    str += abs(old - v);
-    str += "/";
+    str += "/abs/";
+    str += a;
+    str += "/lag base/";
     str += POT_LAG;
-    str += "/";
-    str += abs(old - v) > POT_LAG;
+    str += "/lag calc/";
+    str += lag;
+    str += "/abs > lag/";
+    str += a > lag ? "true" : "false";
+    Serial.println(str);
   }
-  
-  if (abs(old - v) > POT_LAG) {
+
+  if (a > lag) {
     String str = "/POT/";
     str += p;
     str += "/";
@@ -188,8 +235,8 @@ void loopPins() {
       if (nextInput) continue;
 
       if (pinState) {
-        if (DEBUG > 5) {
-          str = "\n/DEBUG/PIN/ON/";
+        if (DEBUG_PAIR1) {
+          str = "\n/DEBUG/PAIR1/PIN/ON/";
           str += p_out;
           str += "/WITH/";
           str += p_in;

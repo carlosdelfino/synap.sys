@@ -2,6 +2,7 @@
 #define PARAMETERS_H 1
 
 #include "Arduino.h"
+#include "pots_lag_types.h"
 
 // macros para ativacao de depuracao
 #define D_L_INIT    B00000001
@@ -14,10 +15,12 @@
 //#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR1 | D_L_PAIR2 )
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR  )
+//#define DEBUG          (D_L_POTS)
 
 #ifndef DEBUG
 #define DEBUG         (0)
 #endif
+
 #define DEBUG_INIT    (D_L_INIT   == (DEBUG & D_L_INIT ))
 #define DEBUG_OUTPUT  (D_L_OUTPUT == (DEBUG & D_L_OUTPUT))
 #define DEBUG_PAIR1   (D_L_PAIR1  == (DEBUG & D_L_PAIR1))
@@ -30,7 +33,7 @@
 // o mapeamento nao e direto o pino 1 nao e necessariamente o mesmo pino no arduino
 #if DEBUG > 0
 const byte PINS[]    = {2, 3, 4, 5, 6, 7};
-const byte POTS[]    = {A1, A2, A3, A4};
+const byte POTS[]    = {A2, A3};
 #elif defined(ARDUINO_AVR_MEGA2560)
 const byte PINS[]    = {2, 3, 4, 5, 6, 7, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37};
 const byte POTS[]    = {A1, A2, A3, A4};
@@ -42,7 +45,9 @@ const byte POTS[]    = {A1, A2, A3, A4};
 #endif
 
 // define o lag entre valores para informar um alteracao no valor da leitura analogica
-#define POT_LAG (30)
+#define POT_LAG (15)
+#define POT_LAG_MIN 3
+#define POT_LAG_MAX 3
 
 // indica que deve ser usado LED13 no lugar do time
 #define USE_LED13_NO_TIME true
@@ -52,11 +57,11 @@ const byte POTS[]    = {A1, A2, A3, A4};
 #define USE_LED13_NO_TIME false
 #endif
 
-#define DELAY_OUTPUT (DEBUG?100:0)
-#define DELAY_INPUT (DEBUG?100:0)
-#define DELAY_LOOP (DEBUG?100:3)
-#define DELAY_LOOP_PINS (DEBUG?300:30)
-#define DELAY_LOOP_POTS (DEBUG?300:10)
+#define DELAY_OUTPUT (DEBUG?10:0)
+#define DELAY_INPUT (DEBUG?10:0)
+#define DELAY_LOOP (DEBUG?10:3)
+#define DELAY_LOOP_PINS (DEBUG?30:30)
+#define DELAY_LOOP_POTS (DEBUG?30:10)
 
 #if USE_LED13_NO_TIME
 #define DELAY_SHOW_TIME (DEBUG?300:500)
