@@ -225,7 +225,7 @@ void showPeers() {
       str1 += pin1;
       str1 += "/";
       str1 += pin2;
-      str1 += "/off";
+      str1 += "/OFF";
       Serial.println(str1);
       Serial.flush();
     }

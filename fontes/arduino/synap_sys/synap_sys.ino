@@ -58,12 +58,17 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
+long lastShowTime;
 
 void loop() {
   if (DEBUG)Serial.println("**********************");
-  str = "/loop/time/";
-  str += millis();
-  Serial.println(str);
+  long showTime = millis();
+  if ((showTime - lastShowTime) > DELAY_SHOW_TIME) {
+    str = "/loop/time/";
+    str += showTime;
+    Serial.println(str);
+    lastShowTime = showTime;
+  }
 
   c = 0;
 
@@ -147,7 +152,3 @@ void loop() {
 
   delay(DELAY_LOOP);
 }
-
-
-
-
