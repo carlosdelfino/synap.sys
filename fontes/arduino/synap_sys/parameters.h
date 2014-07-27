@@ -40,6 +40,9 @@ const byte POTS[]    = {A1, A2, A3, A4};
 #error "Este codigo ainda nao esta pronto para outras plataformas"
 #endif
 
+// define o lag entre valores para informar um alteracao no valor da leitura analogica
+#define POT_LAG (30)
+
 // indica que deve ser usado LED13 no lugar do time
 #define USE_LED13_NO_TIME true
 
@@ -52,7 +55,7 @@ const byte POTS[]    = {A1, A2, A3, A4};
 #define DELAY_INPUT (DEBUG?100:0)
 #define DELAY_LOOP (DEBUG?100:3)
 #define DELAY_LOOP_PINS (DEBUG?300:30)
-#define DELAY_LOOP_POTS (DEBUG?300:30)
+#define DELAY_LOOP_POTS (DEBUG?300:10)
 
 #if USE_LED13_NO_TIME
 #define DELAY_SHOW_TIME (DEBUG?300:500)
