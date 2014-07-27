@@ -1,4 +1,5 @@
 #include "parameters.h"
+#include "peers.h"
 
 String str;
 
@@ -48,27 +49,30 @@ void setup() {
   str += DELAY_LOOP;
   Serial.println(str);
 
+  resetOldPeers();
+  resetPeers();
+
   Serial.println("\n/init/end");
+
 }
 
 byte c;
 byte lastPin = 0;
 
 void loop() {
-  if(DEBUG)Serial.println("**********************");
-  str = "/loop/";
+  if (DEBUG)Serial.println("**********************");
+  str = "/loop/time/";
   str += millis();
   Serial.println(str);
 
   c = 0;
 
-  resetPeers();
 
   for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
     bool nextOutput = false;
 
-    // retorna o ultimo pino usado para o estado INPUT
-    pinMode(PINS[lastPin],INPUT);
+    // retorna o ultimo pino usado para o estado INP
+    pinMode(PINS[lastPin], INPUT);
     lastPin = p_out;
 
     delay(DELAY_OUTPUT);
@@ -100,8 +104,8 @@ void loop() {
       } // DEBUG
 
       for (byte pair = 0; pair < NUM_PEERS  && c < NUM_PEERS; pair++) {
-        if (DEBUG_PAIR) {
-          str = "/DEBUG/PAIR/";
+        if (DEBUG_PAIR2) {
+          str = "/DEBUG/PAIR2/";
           str += pair;
           str += "/";
           str += pairPin1(pair);
@@ -110,7 +114,7 @@ void loop() {
           Serial.println(str);
         }// DEBUG
 
-        if (usedPin(pair,p_in)) {
+        if (usedPin(pair, p_in)) {
           nextInput = true;
           break;
         }
@@ -127,7 +131,7 @@ void loop() {
           Serial.println(str);
         } // DEBUG
 
-        setPair(p_in, p_out);
+        setPair(c++, p_in, p_out);
 
         nextOutput = true; // vou para a proxima entrada, apenas um par por output;
         break;
@@ -136,26 +140,14 @@ void loop() {
 
     digitalWrite(PINS[p_out], LOW);
     if (nextOutput) continue;
-  } // FINDA FOR OUTPUT
+  } // FINALIZA FOR OUTPUT
+
+  showPeers();
+  movePeers();
+
   delay(DELAY_LOOP);
 }
 
 
-inline void resetPeers() {
-  for (byte b = 0; b < NUM_PEERS; b++) {
-    peers(b, 255, 255);
-  }
-}
 
 
-void setPair(byte p_in, byte p_out) {
-  peers(c++, p_in, p_out);
-
-  str = "/PIN/";
-  str += p_in;
-  str += "/";
-  str += p_out;
-  str += "/ON";
-  Serial.println(str);
-  Serial.flush();
-}
