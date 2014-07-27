@@ -4,7 +4,11 @@
 String str;
 
 void setup() {
+  if (USE_LED13_NO_TIME)
+    pinMode(13, OUTPUT);
+
   Serial.begin(9660);
+
   Serial.println("\n\n\n\n\n/init/begin");
 
   if (DEBUG_INIT) {
@@ -58,15 +62,20 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
-long lastShowTime, lastLoopPinsTime;
+long lastShowTime, lastLoopPinsTime, lastLoopPotsTime;
 
 void loop() {
-  if (DEBUG)Serial.println("**********************");
+  if (DEBUG) Serial.println("**********************");
+
   long showTime = millis();
-  if ((showTime - lastShowTime) > DELAY_SHOW_TIME) {
-    str = "/loop/time/";
-    str += showTime;
-    Serial.println(str);
+  if ((showTime - lastShowTime) > (DELAY_SHOW_TIME)) {
+    if (USE_LED13_NO_TIME) {
+      digitalWrite(13, !digitalRead(13));
+    } else {
+      str = "/loop/time/";
+      str += showTime;
+      Serial.println(str);
+    }
     lastShowTime = showTime;
   }
 
@@ -75,9 +84,18 @@ void loop() {
     loopPins();
     lastLoopPinsTime = loopPinsTime;
   }
-  
+
+  long loopPotsTime = millis();
+  if (DELAY_LOOP_POTS < (loopPotsTime - lastLoopPotsTime)) {
+    loopPots();
+    lastLoopPotsTime = loopPotsTime;
+  }
+
   delay(DELAY_LOOP);
 
+}
+
+void loopPots() {
 }
 
 void loopPins() {
