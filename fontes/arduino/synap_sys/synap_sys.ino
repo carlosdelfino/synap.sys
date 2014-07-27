@@ -58,7 +58,7 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
-long lastShowTime;
+long lastShowTime, lastLoopPinsTime;
 
 void loop() {
   if (DEBUG)Serial.println("**********************");
@@ -70,8 +70,18 @@ void loop() {
     lastShowTime = showTime;
   }
 
-  c = 0;
+  long loopPinsTime = millis();
+  if (DELAY_LOOP_PINS < (loopPinsTime - lastLoopPinsTime)) {
+    loopPins();
+    lastLoopPinsTime = loopPinsTime;
+  }
+  
+  delay(DELAY_LOOP);
 
+}
+
+void loopPins() {
+  c = 0;
 
   for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
     bool nextOutput = false;
@@ -149,6 +159,4 @@ void loop() {
 
   showPeers();
   movePeers();
-
-  delay(DELAY_LOOP);
 }

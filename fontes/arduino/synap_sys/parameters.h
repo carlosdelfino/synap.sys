@@ -9,10 +9,13 @@
 #define D_L_PAIR1   B00001000
 #define D_L_PAIR2   B00010000
 #define D_L_INPUT   B00100000
+
 //#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR1 | D_L_PAIR2 )
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR  )
+#ifndef DEBUG
 #define DEBUG         (0)
+#endif
 #define DEBUG_INIT    (D_L_INIT   == (DEBUG & D_L_INIT ))
 #define DEBUG_OUTPUT  (D_L_OUTPUT == (DEBUG & D_L_OUTPUT))
 #define DEBUG_PAIR1   (D_L_PAIR1  == (DEBUG & D_L_PAIR1))
@@ -40,8 +43,9 @@ const byte POTS[]    = {A1, A2, A3, A4};
 
 #define DELAY_OUTPUT (DEBUG?100:0)
 #define DELAY_INPUT (DEBUG?100:0)
-#define DELAY_LOOP (DEBUG?1300:30)
-#define DELAY_SHOW_TIME (DEBUG?300:1000)
+#define DELAY_LOOP (DEBUG?100:3)
+#define DELAY_SHOW_TIME (DEBUG?300:3000)
+#define DELAY_LOOP_PINS (DEBUG?300:30)
 
 #endif
 
