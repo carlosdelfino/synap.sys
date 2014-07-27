@@ -1,10 +1,15 @@
 #include "parameters.h"
 #include "peers.h"
+#include "pots.h"
 
 String str;
 
 void setup() {
+  if (USE_LED13_NO_TIME)
+    pinMode(13, OUTPUT);
+
   Serial.begin(9660);
+
   Serial.println("\n\n\n\n\n/init/begin");
 
   if (DEBUG_INIT) {
@@ -58,20 +63,65 @@ void setup() {
 
 byte c;
 byte lastPin = 0;
-long lastShowTime;
+long potsOldValues[NUM_POTS];
+long lastShowTime, lastLoopPinsTime, lastLoopPotsTime;
 
 void loop() {
-  if (DEBUG)Serial.println("**********************");
+  if (DEBUG) Serial.println("**********************");
+
   long showTime = millis();
-  if ((showTime - lastShowTime) > DELAY_SHOW_TIME) {
-    str = "/loop/time/";
-    str += showTime;
-    Serial.println(str);
+  if ((showTime - lastShowTime) > (DELAY_SHOW_TIME)) {
+    if (USE_LED13_NO_TIME) {
+      digitalWrite(13, !digitalRead(13));
+    } else {
+      str = "/loop/time/";
+      str += showTime;
+      Serial.println(str);
+    }
     lastShowTime = showTime;
   }
 
-  c = 0;
+  long loopPinsTime = millis();
+  if (DELAY_LOOP_PINS < (loopPinsTime - lastLoopPinsTime)) {
+    loopPins();
+    lastLoopPinsTime = loopPinsTime;
+  }
 
+  long loopPotsTime = millis();
+  if (DELAY_LOOP_POTS < (loopPotsTime - lastLoopPotsTime)) {
+    loopPots();
+    lastLoopPotsTime = loopPotsTime;
+  }
+
+  delay(DELAY_LOOP);
+
+}
+
+byte lastPotRead = 0;
+void loopPots() {
+  byte p;
+  if (lastPotRead++ < NUM_POTS)
+    p = lastPotRead;
+  else
+    p = lastPotRead = 0;
+    
+  signed long v = analogRead(POTS[p]);
+  signed long old = potsOldValues[p];
+
+
+  if (abs(old - v) > POT_LAG) {
+    String str = "/POT/";
+    str += p;
+    str += "/";
+    str += v;
+    Serial.println(str);
+    potsOldValues[p] = v;
+  }
+}
+
+
+void loopPins() {
+  c = 0;
 
   for (byte p_out = 0; p_out < NUM_PINS && c < NUM_PEERS; p_out++) {
     bool nextOutput = false;
@@ -149,6 +199,4 @@ void loop() {
 
   showPeers();
   movePeers();
-
-  delay(DELAY_LOOP);
 }

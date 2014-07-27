@@ -4,7 +4,6 @@
 #include "parameters.h"
 
 const byte NUM_PINS  = sizeof(PINS) / sizeof(*PINS); // para saber o tamanho de um array
-const byte NUM_POTS  = sizeof(POTS) / sizeof(*POTS);
 const byte NUM_PEERS = NUM_PINS / 2;
 
 void movePeers();
