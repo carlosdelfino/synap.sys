@@ -13,8 +13,13 @@ void setup() {
   Serial.begin(9660);
 
   Serial.println("\n\n\n\n\n/init/begin");
-
-  if (DEBUG_INIT) {
+  #ifdef SYNAP_SYS_BOARD
+  str = "\n/init/";
+  str += SYNAP_SYS_BOARD;
+  Serial.println(str);
+  #endif
+  
+  if (DEBUG) {
     Serial.println("/DEBUG/ENABLED");
   }
 
