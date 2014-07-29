@@ -38,11 +38,11 @@
 #if DEBUG > 0
 const byte PINS[]    = {2, 3, 4, 5, 6, 7};
 const byte POTS[]    = {A2, A3};
-#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1284__) || defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644A__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega644PA__)
+#elif defined(__AVR_ATmega2560__)  || defined(__AVR_ATmega1280__)  // Arduino Mega e Variantes
 //#elif defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_MEGA2560)
 const byte PINS[]    = {2, 3, 4, 5, 6, 7, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37};
 const byte POTS[]    = {A1, A2, A3, A4};
-#elif defined(__AVR_ATmega328__) || defined(__AVR_ATmega128__)
+#elif defined(__AVR_ATmega328P__) // Arduino UNO
 //#elif defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_UNO)
 const byte PINS[]    = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 const byte POTS[]    = {A1, A2, A3, A4};
