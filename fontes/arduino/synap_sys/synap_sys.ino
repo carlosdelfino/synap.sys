@@ -1,6 +1,7 @@
 #include "parameters.h"
 #include "peers.h"
 #include "pots.h"
+#include "serialcmd.h" 
 
 String str;
 
@@ -49,6 +50,8 @@ void setup() {
   }
   Serial.println("\n/init/pins/ok");
 
+  setupLeds();
+
   if (DEBUG_INIT) {
     Serial.println("/DEBUG/STARTED\n");
   }
@@ -87,6 +90,7 @@ void setup() {
   Serial.println("\n/init/end");
 
 }
+
 
 byte c;
 byte lastPin = 0;
