@@ -1,0 +1,15 @@
+(datafile
+  (version 1)
+    (date "Quarta Feira, 30 '30e' Julho '30e' 2014 'à25' 17:22:25")
+      (tool "pcb_calculator (2014-01-10 BZR 4027)-stable")
+        (regulators
+          (regulator LM335
+            (reg_vref 1.24)
+            (reg_iadj 45)
+            (reg_type 3terminal)
+          )
+        )
+      )
+    )
+  )
+)
