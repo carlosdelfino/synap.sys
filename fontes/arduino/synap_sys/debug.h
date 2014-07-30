@@ -13,7 +13,7 @@
 //#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR1 | D_L_PAIR2 )
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR  )
-#define DEBUG          (D_L_SERIALCMD)
+//#define DEBUG          (D_L_SERIALCMD)
 //#define DEBUG          (D_L_POTS)
 
 #ifndef DEBUG
