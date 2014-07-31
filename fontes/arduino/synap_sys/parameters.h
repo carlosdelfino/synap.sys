@@ -41,7 +41,7 @@ const byte LEDS[]    = {A0, A5};
 // indica que deve ser usado LED13 no lugar do time
 #if DEBUG > 0
 #define USE_LED13_NO_TIME false
-#elif
+#else
 #define USE_LED13_NO_TIME true
 #endif
 
