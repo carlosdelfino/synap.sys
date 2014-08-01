@@ -7,10 +7,11 @@
 #define D_L_OUTPUT      B00000100
 #define D_L_PAIR1       B00001000
 #define D_L_PAIR2       B00010000
+#define D_L_PAIR       (D_L_PAIR2 | D_L_PAIR1)
 #define D_L_INPUT       B00100000
 #define D_L_POTS        B10000000
 
-//#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR | D_L_INPUT)
+//#define DEBUG         ( D_L_INIT | D_L_OUTPUT | D_L_PAIR1 | D_L_PAIR2 | D_L_INPUT)
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR1 | D_L_PAIR2 )
 //#define DEBUG         ( D_L_OUTPUT | D_L_PAIR  )
 //#define DEBUG          (D_L_SERIALCMD)

@@ -1,7 +1,7 @@
 #ifndef PEERS_H
 #define PEERS_H
-
 #include "parameters.h"
+
 #define DEBUG_OUTPUT      (D_L_OUTPUT      == (DEBUG & D_L_OUTPUT))
 #define DEBUG_PAIR1       (D_L_PAIR1       == (DEBUG & D_L_PAIR1))
 #define DEBUG_PAIR2       (D_L_PAIR2       == (DEBUG & D_L_PAIR2))
