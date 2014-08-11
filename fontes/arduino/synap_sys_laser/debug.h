@@ -7,7 +7,7 @@
 #define D_L_SERVO       B10000000 << 1
 #define D_L_LASER       B10000000 << 2
 
-//#define DEBUG         ( D_L_INIT | D_L_SERVO | D_L_LASER | D_L_SERIALCMD)
+#define DEBUG         ( D_L_INIT | D_L_SERVO | D_L_LASER | D_L_SERIALCMD)
 //#define DEBUG          (D_L_SERIALCMD)
 //#define DEBUG          (D_L_POTS)
 

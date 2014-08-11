@@ -6,9 +6,14 @@
 void setup() {
   Serial.begin(9600);
   
+  Serial.println("\n/init/begin");
+
   setupSerialCmd();
   setupLasers() ;
   setupServos() ;
+  
+  
+  Serial.println("\n/init/ok/");
 
 }
 
@@ -88,5 +93,5 @@ void setupServos() {
   
   free(cmds);
   
-  Serial.println("\n/init/lasers/ok");
+  Serial.println("\n/init/servos/ok");
 }

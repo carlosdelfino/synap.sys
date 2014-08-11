@@ -156,9 +156,9 @@ void parseSerialServoCmd(Cmd cmds, char c, byte * cmdStatus_p) {
   }
 
 
-  if (cmdStatus == CMD_SERVO_OK) {
+  if (cmdStatus == CMD_SERVO_SET_ANGLE_OK) {
     byte res = servoCmdEvent(cmds);
-    String str = "/SERVO/CMD/";
+    String str = "/DEBUG/SERVO/CMD_SET_ANGLE_OK/";
     if (res) {
       str += "OK/";
       str += cmds->event ;
@@ -173,27 +173,61 @@ void parseSerialServoCmd(Cmd cmds, char c, byte * cmdStatus_p) {
       str += "/ERROR/";
     }
     Serial.println(str);
+  } else if (cmdStatus == CMD_SERVO_GET_ANGLE_OK) {
+    byte angle = servosObj[cmds->id].read();
+    if (DEBUG_SERIALCMD) {
+      String str = "/DEBUG/SERVO/CMD_SERVO_GET_ANGLE_OK/id/";
+      str += cmds->id;
+      str += "/angle/";
+      str += angle;
+      str += "/";
+      Serial.println(str);
+    }
+    Serial.print("/servo/angle/");
+    Serial.print(angle);
+    Serial.println("/");
+
   } else if (cmdStatus == CMD_SERVO && c == '/') {
+
     byte  num = Serial.parseInt();
     cmds->id = num;
     if (DEBUG_SERIALCMD) {
-      String str = "/DEBUG/SERVO/id/";
+      String str = "/DEBUG/SERVO/CMD_SERVO/id/";
       str += num;
       str += "/";
       Serial.println(str);
     }
     (*cmdStatus_p) =  CMD_SERVO_NUM_OK;
-
   } else if (cmdStatus == CMD_SERVO_NUM_OK && c == '/') {
-    byte  num = Serial.parseInt();
-    cmds->event = num;
+    c = Serial.peek();
     if (DEBUG_SERIALCMD) {
-      String str = "/DEBUG/SERVO/angle/";
-      str += num;
-      str += "/";
+      String str = "/DEBUG/SERVO/CMD_SERVO_NUM_OK/";
       Serial.println(str);
     }
-    (*cmdStatus_p) = CMD_SERVO_OK;
+    if ( c == 'A' || c == 'a') {
+      while (Serial.available() && c != '/') {
+        c = Serial.read();
+        if (DEBUG_SERIALCMD) {
+          Serial.println(c);
+        }
+      }
+      if (DEBUG_SERIALCMD) {
+        String str = "/DEBUG/CMD_SERVO_NUM_OK/get angle/";
+        Serial.println(str);
+      }
+      (*cmdStatus_p) =  CMD_SERVO_GET_ANGLE_OK;
+    } else {
+      byte  num = Serial.parseInt();
+      cmds->event = num;
+      if (DEBUG_SERIALCMD) {
+        String str = "/DEBUG/CMD_SERVO_NUM_OK/set angle/";
+        str += num;
+        str += "/";
+        Serial.println(str);
+      }
+      (*cmdStatus_p) = CMD_SERVO_SET_ANGLE_OK;
+      parseSerialServoCmd(cmds,c,cmdStatus_p);
+    }
   }
 }
 
