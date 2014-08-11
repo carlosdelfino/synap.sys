@@ -1,3 +1,13 @@
+/**
+ * Firmware para controle do Synap.sys
+ * Este codigo informa os pares de conexao no sinap.sys, valor de leitura de 
+ * 4 potenciometres, alem de permitir controlar 2 LEDs no Arduino UNO ou 4 LEDs
+ * no Arduino Mega.
+ *
+ * Para obtencao da sintaxe das mensagens enviadas e para controle dos LEDs veja
+ * o arquivo Readme.md neste diretorio.
+ * 
+ */
 #include "parameters.h"
 #include "peers.h"
 #include "pots.h"
@@ -110,7 +120,7 @@ void loop() {
     }
     lastShowTime = showTime;
   }
-
+/*
   long loopPinsTime = millis();
   if (DELAY_LOOP_PINS < (loopPinsTime - lastLoopPinsTime)) {
     loopPins();
@@ -122,7 +132,7 @@ void loop() {
     loopPots();
     lastLoopPotsTime = loopPotsTime;
   }
-
+*/
   delay(DELAY_LOOP);
 
 }
