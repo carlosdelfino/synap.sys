@@ -173,20 +173,6 @@ void parseSerialServoCmd(Cmd cmds, char c, byte * cmdStatus_p) {
       str += "/ERROR/";
     }
     Serial.println(str);
-  } else if (cmdStatus == CMD_SERVO_GET_ANGLE_OK) {
-    byte angle = servosObj[cmds->id].read();
-    if (DEBUG_SERIALCMD) {
-      String str = "/DEBUG/SERVO/CMD_SERVO_GET_ANGLE_OK/id/";
-      str += cmds->id;
-      str += "/angle/";
-      str += angle;
-      str += "/";
-      Serial.println(str);
-    }
-    Serial.print("/servo/angle/");
-    Serial.print(angle);
-    Serial.println("/");
-
   } else if (cmdStatus == CMD_SERVO && c == '/') {
 
     byte  num = Serial.parseInt();
@@ -215,7 +201,21 @@ void parseSerialServoCmd(Cmd cmds, char c, byte * cmdStatus_p) {
         String str = "/DEBUG/CMD_SERVO_NUM_OK/get angle/";
         Serial.println(str);
       }
-      (*cmdStatus_p) =  CMD_SERVO_GET_ANGLE_OK;
+      byte angle = servosObj[cmds->id].read();
+      if (DEBUG_SERIALCMD) {
+        String str = "/DEBUG/SERVO/CMD_SERVO_GET_ANGLE_OK/id/";
+        str += cmds->id;
+        str += "/angle/";
+        str += angle;
+        str += "/";
+        Serial.println(str);
+      }
+      String msg = "/servo/";
+      msg += (cmds->id);
+      msg += "/angle/";
+      msg += (angle);
+      msg += "/";
+      Serial.println(msg);
     } else {
       byte  num = Serial.parseInt();
       cmds->event = num;
@@ -226,7 +226,9 @@ void parseSerialServoCmd(Cmd cmds, char c, byte * cmdStatus_p) {
         Serial.println(str);
       }
       (*cmdStatus_p) = CMD_SERVO_SET_ANGLE_OK;
-      parseSerialServoCmd(cmds,c,cmdStatus_p);
+      // analisar o impacto da recursao e sua profundidade
+      // talvez o uso do loop do{}while seja melhor?????
+      parseSerialServoCmd(cmds, c, cmdStatus_p);
     }
   }
 }
@@ -236,10 +238,14 @@ void serialEvent() {
   static byte cmdStatus = 0;
   if (DEBUG_SERIALCMD)Serial.println("Serial Event");
 
+  // usar do{}while para acelerar, ja que serial event somente e executado uma vez que ha
+  // chegada de dados na serial
   while (Serial.available()) {
     char c = (char)Serial.read();
 
     if (DEBUG_SERIALCMD)Serial.println(c);
+    // verificar o que realmente levou a ser preciso usar este delay e se ele pdoe ser removido
+    // consultar conceito de timeout da serial se preciso tentar com millissegundos
     delay(10); // este delay e para dar tempo de todos os dados chegarem na porta serial.
 
     if (!cmdStatus && c == '/') {
