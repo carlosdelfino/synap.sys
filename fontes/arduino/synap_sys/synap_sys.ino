@@ -120,7 +120,7 @@ void loop() {
     }
     lastShowTime = showTime;
   }
-/*
+
   long loopPinsTime = millis();
   if (DELAY_LOOP_PINS < (loopPinsTime - lastLoopPinsTime)) {
     loopPins();
@@ -132,7 +132,7 @@ void loop() {
     loopPots();
     lastLoopPotsTime = loopPotsTime;
   }
-*/
+
   delay(DELAY_LOOP);
 
 }
