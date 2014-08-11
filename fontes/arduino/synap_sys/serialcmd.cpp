@@ -7,7 +7,7 @@ LedCmd ledcmd;
 void serialEvent() {
   byte cmd = 0;
   while (Serial.available()) {
-    delay(5);
+    delay(DELAY_SERIALCMD_READ);
     char c = (char)Serial.read();
 
     if (DEBUG_SERIALCMD)Serial.print(c);
