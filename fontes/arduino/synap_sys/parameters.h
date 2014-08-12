@@ -38,6 +38,9 @@ const byte LEDS[]    = {A0, A5};
 #define POT_LAG_MIN 3
 #define POT_LAG_MAX 3
 
+#define MSG_PIN_ON  "1"
+#define MSG_PIN_OFF "0"
+
 // indica que deve ser usado LED13 no lugar do time
 #if DEBUG > 0
 #define USE_LED13_NO_TIME false
