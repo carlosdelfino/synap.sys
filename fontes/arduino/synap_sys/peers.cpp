@@ -207,7 +207,8 @@ void showPeers() {
         str1 += "/";
         str1 += pairPin2(b);
 
-        str1 += "/ON";
+        str1 += "/";
+	str1 += MSG_PIN_ON;
         Serial.println(str1);
         Serial.flush();
       }
@@ -225,7 +226,8 @@ void showPeers() {
       str1 += pin1;
       str1 += "/";
       str1 += pin2;
-      str1 += "/OFF";
+      str1 += "/";
+      str1 += MSG_PIN_OFF;
       Serial.println(str1);
       Serial.flush();
     }
