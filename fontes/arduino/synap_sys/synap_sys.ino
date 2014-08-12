@@ -189,7 +189,7 @@ void loopPots() {
   if (a > lag) {
     String str = "/POT/";
     str += p;
-    str += "/";
+    str += "=";
     str += v;
     Serial.println(str);
     potsOldValues[p] = v;
