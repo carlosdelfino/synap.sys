@@ -26,7 +26,7 @@ const byte SERVOS[]    = {12, 11, 10,  9,  8};
 
 
 
-#define TEMP_INTERNAL_TOS  318,2
+#define TEMP_INTERNAL_TOS  320.57
 #define TEMP_INTERNAL_K    1.22
 
 #define MEAN_TEMP_ROOM      10
