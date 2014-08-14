@@ -41,7 +41,7 @@ void loop() {
     lastTimeTempRoom = time;
   }
   delay(DELAY_TEMP_INTER_READ);
-/*
+
 // estou tendo problemas em fazer a leitura interna, porque uso com 1.1V
 // e ao trocar a tensao de referencia toda as leituras em tensoes diferentes param
 // mesmo dando o tempo certo para retornar a tensao certa.
@@ -53,7 +53,7 @@ void loop() {
     lastTimeTempInternal = time;
   }
   delay(DELAY_TEMP_INTER_READ);
-*/
+
 
   delay(500);
 }
@@ -228,5 +228,5 @@ void setupServos() {
 
   free(cmds);
 
-  Serial.println("\n/init/lasers/ok");
+  Serial.println("\n/init/servos/ok");
 }
