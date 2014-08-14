@@ -25,6 +25,19 @@ const byte SERVOS[]    = {12, 11, 10,  9,  8};
 #endif
 
 
+
+#define TEMP_INTERNAL_TOS  318,2
+#define TEMP_INTERNAL_K    1.22
+
+#define MEAN_TEMP_ROOM      10
+#define MEAN_TEMP_INTERNAL  10
+#define MEAN_TEMP_HEAT_SINK  10
+
+
+#define PIN_TEMP_HEAT_SINK A0
+#define PIN_TEMP_ROOM      A1
+
+
 const byte NUM_LASERS  = sizeof(LASERS) / sizeof(*LASERS);
 const byte NUM_SERVOS  = sizeof(SERVOS) / sizeof(*SERVOS);
 
@@ -32,4 +45,15 @@ const byte NUM_SERVOS  = sizeof(SERVOS) / sizeof(*SERVOS);
 #define MIDLE_SERVO_ANGLE (MAX_SERVO_ANGLE/2)
 #define MIN_SERVO_ANGLE 0
 #define SERVO_DELAY_TEST 250
+
+#define DELAY_TEMP_ROOM       (1000)
+#define DELAY_TEMP_HEAT_SINK  (1000)
+#define DELAY_TEMP_INTERNAL   (1000)
+#define DELAY_TEMP_INTER_READ (100)
+
+
+
+
+// user apenas DEFAULT ou INTERNAL
+#define TEMP_AREF  (DEFAULT) // cuidado ao fazer esta mudanca vc pode danificar o arduino
 #endif
