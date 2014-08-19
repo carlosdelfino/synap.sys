@@ -19,7 +19,7 @@ void setup() {
 }
 
 void loop() {
-/*  long time = millis();
+  long time = millis();
   if ((time - lastTimeTempHeatSink) > DELAY_TEMP_HEAT_SINK) {
     Serial.print("/temp/heatsink/");
     double temp = readHeatSinkTemp();
@@ -53,7 +53,7 @@ void loop() {
     lastTimeTempInternal = time;
   }
   delayMicroseconds(DELAY_TEMP_INTER_READ);
-  */
+  
 }
 
 double readRoomTemp() {
