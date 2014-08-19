@@ -27,7 +27,7 @@ void loop() {
     Serial.println("/");
     lastTimeTempHeatSink = time;
   }
-  delay(DELAY_TEMP_INTER_READ);
+  delayMicroseconds(DELAY_TEMP_INTER_READ);
 
   time = millis();
   if ((time - lastTimeTempRoom) > DELAY_TEMP_ROOM) {
@@ -40,7 +40,7 @@ void loop() {
     analogReference(DEFAULT);
     lastTimeTempRoom = time;
   }
-  delay(DELAY_TEMP_INTER_READ);
+  delayMicroseconds(DELAY_TEMP_INTER_READ);
 
 // estou tendo problemas em fazer a leitura interna, porque uso com 1.1V
 // e ao trocar a tensao de referencia toda as leituras em tensoes diferentes param
@@ -52,10 +52,7 @@ void loop() {
     Serial.println("/");
     lastTimeTempInternal = time;
   }
-  delay(DELAY_TEMP_INTER_READ);
-
-
-  delay(500);
+  delayMicroseconds(DELAY_TEMP_INTER_READ);
 }
 
 double readRoomTemp() {
@@ -175,7 +172,7 @@ void setupLasers() {
     cmds->event = HIGH;
     laserCmdEvent(cmds);
 
-    delay(20);
+    delay(DELAY_SETUP_INTER_LASERS);
 
     cmds->event = !cmds->event;
     laserCmdEvent(cmds);

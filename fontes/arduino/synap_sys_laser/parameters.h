@@ -46,10 +46,11 @@ const byte NUM_SERVOS  = sizeof(SERVOS) / sizeof(*SERVOS);
 #define MIN_SERVO_ANGLE 0
 #define SERVO_DELAY_TEST 250
 
-#define DELAY_TEMP_ROOM       (1000)
-#define DELAY_TEMP_HEAT_SINK  (1000)
-#define DELAY_TEMP_INTERNAL   (1000)
-#define DELAY_TEMP_INTER_READ (100)
+#define DELAY_TEMP_ROOM          (1000)
+#define DELAY_TEMP_HEAT_SINK     (1000)
+#define DELAY_TEMP_INTERNAL      (1000)      // delay em milesegundos
+#define DELAY_TEMP_INTER_READ    (10 * 1000) // delay em microsegundos
+#define DELAY_SETUP_INTER_LASERS (50)
 
 
 
