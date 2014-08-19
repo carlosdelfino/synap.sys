@@ -13,10 +13,21 @@ static  byte servoCmdEvent(Cmd cmds);
 **/
 byte servoCmdEvent(Cmd cmds);
 byte laserCmdEvent(Cmd cmds);
+byte serialWaitAvailable(byte s = 1, long timeOut = TIMEOUT_SERIAL_CMD);
 
 Servo servosObj[NUM_SERVOS];
 
 Cmd cmds = (Cmd)malloc(sizeof(Cmd));
+
+byte serialWaitAvailable(byte s, long timeOut) {
+  long lastread = millis();
+  byte a;
+  do {
+    delay(DELAY_SERIAL_CMD);
+    a = Serial.available();
+  } while ( (a < s) && ( (millis() - lastread) < timeOut));
+  return a;
+}
 
 void setupSerialCmd() {
   cmds->event = 0;
@@ -87,207 +98,136 @@ byte laserCmdEvent(Cmd cmds) {
   return res;
 }
 
-
-
-void parseSerialLaserCmd(Cmd cmds, char c, byte * cmdStatus_p) {
-  byte cmdStatus = (*cmdStatus_p);
-  (*cmdStatus_p) = 0;
-
+bool parseSerialLaserCmd() {
+  byte  num = Serial.parseInt();
+  cmds->id = num;
   if (DEBUG_SERIALCMD) {
-    String str = "/DEBUG/LASER/parseSerialLaserCmd/";
+    String str = "/DEBUG/LASER/num/";
+    str += num;
+    str += "/";
+    Serial.println(str);
+  }
+  char c;
+  if (serialWaitAvailable(3)) {
+    Serial.read();
+    Serial.read();
+    c = (char)Serial.read();
+  } else return false;
+
+if (DEBUG_SERIALCMD) {
+    String str = "/DEBUG/LASER/cmd/";
+    str += (c == 'N' || c == 'n')?"on":"off";
+    str += "/";
+    Serial.println(str);
+  }
+  cmds->event = (c == 'N' || c == 'n');
+  byte res = laserCmdEvent(cmds);
+  String str = "/LASER/CMD/";
+  if (res) {
+    str += "OK/";
+    str += cmds->id;
+    str += "/";
+    str += cmds->event?"ON":"OFF" ;
+    str += "/OK/";
+  } else {
+    str += "ERROR/";
     str += cmds->id;
     str += "/";
     str += cmds->event;
-    str += "/";
-    str += cmdStatus;
-    str += "/";
-    str += c;
-
-    Serial.println(str);
+    str += "/ERROR/";
   }
-
-  if (cmdStatus == CMD_LASER_OK) {
-    byte res = laserCmdEvent(cmds);
-    String str = "/LASER/CMD/";
-    if (res) {
-      str += "OK/";
-      str += cmds->event;
-      str += "/";
-      str += cmds->id;
-      str += "/OK/";
-    }
-  } else if (cmdStatus == CMD_LASER && c == '/') {
-    byte  num = Serial.parseInt();
-    cmds->id = num;
-    if (DEBUG_SERIALCMD) {
-      String str = "/DEBUG/LASER/num/";
-      str += num;
-      str += "/";
-      Serial.println(str);
-    }
-    (*cmdStatus_p) =  CMD_LASER_NUM_OK;
-
-  } else if (cmdStatus == CMD_LASER_NUM_OK && c == '/') {
-    if (Serial.available() >= 2) {
-      c = (char)Serial.read();
-      c = (char)Serial.read();
-    } else return;
-
-    cmds->event = (c == 'N' || c == 'n');
-    (*cmdStatus_p) = CMD_LASER_OK;
-  }
+  Serial.println(str);
+  Serial.flush();
+  return res;
 }
 
-void parseSerialServoCmd(Cmd cmds, char c, byte * cmdStatus_p) {
-  byte cmdStatus = (*cmdStatus_p);
-  (*cmdStatus_p) = 0;
-
+bool parseSerialServoCmd() {
+  byte  num = Serial.parseInt();
+  cmds->id = num;
   if (DEBUG_SERIALCMD) {
-    String str = "/DEBUG/SERVO/parseSerialServoCmd/";
+    String str = "/DEBUG/SERVO/id/";
+    str += num;
+    str += "/";
+    Serial.println(str);
+  }
+  num = Serial.parseInt();
+  cmds->event = num;
+  if (DEBUG_SERIALCMD) {
+    String str = "/DEBUG/SERVO/angle/";
+    str += num;
+    str += "/";
+    Serial.println(str);
+  }
+  byte res = servoCmdEvent(cmds);
+  String str = "/SERVO/CMD/";
+  if (res) {
+    str += "OK/";
     str += cmds->id;
     str += "/";
-    str += cmds->event;
+    str += cmds->event ;
+    str += "/OK/";
+  } else {
+    str += "ERROR/";
+    str += cmds->id;
     str += "/";
-    str += cmdStatus;
-    str += "/";
-    str += c;
-
-    Serial.println(str);
+    str += cmds->event ;
+    str += "/ERROR/";
   }
-
-
-  if (cmdStatus == CMD_SERVO_OK) {
-    byte res = servoCmdEvent(cmds);
-    String str = "/SERVO/CMD/";
-    if (res) {
-      str += "OK/";
-      str += cmds->event ;
-      str += "/";
-      str += cmds->id;
-      str += "/OK/";
-    } else {
-      str += "ERROR/";
-      str += cmds->event ;
-      str += "/";
-      str += cmds->id;
-      str += "/ERROR/";
-    }
-    Serial.println(str);
-  } else if (cmdStatus == CMD_SERVO && c == '/') {
-    byte  num = Serial.parseInt();
-    cmds->id = num;
-    if (DEBUG_SERIALCMD) {
-      String str = "/DEBUG/SERVO/id/";
-      str += num;
-      str += "/";
-      Serial.println(str);
-    }
-    (*cmdStatus_p) =  CMD_SERVO_NUM_OK;
-
-  } else if (cmdStatus == CMD_SERVO_NUM_OK && c == '/') {
-    byte  num = Serial.parseInt();
-    cmds->event = num;
-    if (DEBUG_SERIALCMD) {
-      String str = "/DEBUG/SERVO/angle/";
-      str += num;
-      str += "/";
-      Serial.println(str);
-    }
-    (*cmdStatus_p) = CMD_SERVO_OK;
-  }
+  Serial.println(str);
+  Serial.flush();
+  return res;
 }
-
 
 void serialEvent() {
-  static byte cmdStatus = 0;
-  if (DEBUG_SERIALCMD)Serial.println("Serial Event");
+  byte cmdStatus = 0;
+  if (DEBUG_SERIALCMD) {
+    Serial.print("Serial Event, Available: ");
+    Serial.println(Serial.available());
+  }
 
-  while (Serial.available()) {
+  while (serialWaitAvailable(2)) {
     char c = (char)Serial.read();
-
+    if (DEBUG_SERIALCMD) {
+      Serial.print("Serial Event, Available: ");
+      Serial.println(Serial.available());
+    }
     if (DEBUG_SERIALCMD)Serial.println(c);
-    delay(10); // este delay e para dar tempo de todos os dados chegarem na porta serial.
+    // delay(10); // este delay e para dar tempo de todos os dados chegarem na porta serial.
 
-    if (!cmdStatus && c == '/') {
+    if (cmdStatus == CMD_BEGIN && (c == 'L' || c == 'l')) {
+      if (Serial.readStringUntil('/')) {
+        cmdStatus = CMD_LASER;
+        if (parseSerialLaserCmd()) cmdStatus == CMD_END;
+        else cmdStatus == CMD_ERROR;
+        continue;
+      }
+      cmdStatus = CMD_ERROR;
+      break;
+    } else if (cmdStatus == CMD_BEGIN && (c == 'S' || c == 's')) {
+      if (Serial.readStringUntil('/')) {
+        cmdStatus = CMD_SERVO;
+        if (parseSerialServoCmd()) cmdStatus == CMD_END;
+        else cmdStatus == CMD_ERROR;
+        continue;
+      }
+      cmdStatus = CMD_ERROR;
+      break;
+    } else if (!cmdStatus && c == '/') {
       if (DEBUG_SERIALCMD) {
-        Serial.println("/DEBUG//INICIO COMANDO!");
+        Serial.println("/DEBUG/INICIO COMANDO!");
       }
 
       cmdStatus = CMD_BEGIN;
       continue;
-    } else if (cmdStatus == CMD_BEGIN && (c == 'L' || c == 'l')) {
-      if (Serial.available() >= 4) {//LASER
-        c = (char)Serial.read();
-        c = (char)Serial.read();
-        c = (char)Serial.read();
-        c = (char)Serial.read();
-      } else break;
-      cmdStatus = CMD_LASER;
-      continue;
-    } else if (cmdStatus == CMD_BEGIN && (c == 'S' || c == 's')) {
-      if (Serial.available() >= 4) {//SERVO
-        c = (char)Serial.read();
-        c = (char)Serial.read();
-        c = (char)Serial.read();
-        c = (char)Serial.read();
-      } else break;
-      if (DEBUG_SERIALCMD) {
-        Serial.println("/DEBUG//Servo COMANDO!");
-      }
-      cmdStatus = CMD_SERVO;
-      continue;
-    } else if ((cmdStatus >= CMD_LASER && cmdStatus <= CMD_LASER_FIM)) { // achei o inicio de um comando Laser
-
-      if (DEBUG_SERIALCMD) {
-        String str = "/DEBUG/LASER/CMD/call_parseSerialLaserCmd/";
-        str += cmdStatus;
-        str += "/";
-        str += c;
-        Serial.println(str);
-      }
-      parseSerialLaserCmd(cmds, c, &cmdStatus);
-      if (DEBUG_SERIALCMD) {
-        String str = "/DEBUG/LASER/CMD/return_parseSerialLaserCmd/";
-        str += cmds->event;
-        str += "/";
-        str += cmds->id;
-        str += "/";
-        str += LASERS[cmds->id];
-        str += "/";
-        str += cmdStatus;
-        Serial.println(str);
-      }
-
-    } else if ((cmdStatus >= CMD_SERVO && cmdStatus <= CMD_SERVO_FIM)) { // achei o inicio de um comando Laser
-      if (DEBUG_SERIALCMD) {
-        String str = "/DEBUG/SERVO/CMD/call_parseSerialServoCmd/";
-        str += cmdStatus;
-        str += "/";
-        str += c;
-        Serial.println(str);
-      }
-      parseSerialServoCmd(cmds, c, &cmdStatus);
-      if (DEBUG_SERIALCMD) {
-        String str = "/DEBUG/SERVO/CMD/return_parseSerialServoCmd/";
-        str += cmds->event;
-        str += "/";
-        str += cmds->id;
-        str += "/";
-        str += SERVOS[cmds->id];
-        str += "/";
-        str += cmdStatus;
-        Serial.println(str);
-      }
     } else if (c == '\n') { // FIM DA LINHA
       if (DEBUG_SERIALCMD) {
         Serial.println("/DEBUG/FIM DE COMANDO!");
       }
-      cmdStatus = 0;
+      cmdStatus = CMD_END;
       break;
     }
   }
-  cmdStatus = 0;
-  delay(10);
+  cmdStatus = CMD_ERROR;
+  //  delay(10);
 }
-
 
