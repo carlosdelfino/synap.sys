@@ -40,7 +40,7 @@ void attachServo(Cmd cmd) {
 
 
 byte servoCmdEvent(Cmd cmd) {
-  bool res = cmd->id >= 0 && cmd->id < NUM_SERVOS;
+  bool res = (cmd->id >= 0 && cmd->id < NUM_SERVOS) || (cmd->id == CODE_ALL_SERVOS);
   res = res && (cmd->event >= MIN_SERVO_ANGLE && cmd->event <= MAX_SERVO_ANGLE);
   if (DEBUG_SERIALCMD) {
     String str = "/DEBUG/SERVO/exec/event/";
@@ -54,9 +54,14 @@ byte servoCmdEvent(Cmd cmd) {
     Serial.println(str);
   }
 
-  if (res)
-    servosObj[cmd->id].write(cmd->event);
-  else if (DEBUG_SERIALCMD) {
+  if (res) {
+    if ( cmd->id == CODE_ALL_SERVOS)
+      for (byte b = 0; b < NUM_SERVOS; b++) {
+        servosObj[b].write(cmd->event);
+      }
+    else
+      servosObj[cmd->id].write(cmd->event);
+  }  else if (DEBUG_SERIALCMD) {
     String str = "/DEBUG/SERVO/exec/event/ERROR/";
     str += cmd->event;
     str += "/";
@@ -80,7 +85,7 @@ byte laserCmdEvent(Cmd cmds) {
     str += LASERS[cmds->id];
     Serial.println(str);
   }
-  
+
   bool status = false;
   if (cmds->id >= 0 && cmds->id < NUM_LASERS) {
     digitalWrite(LASERS[cmds->id], cmds->event);
@@ -90,7 +95,7 @@ byte laserCmdEvent(Cmd cmds) {
       digitalWrite(LASERS[b], cmds->event);
     }
     status = true;
-  }else if (DEBUG_SERIALCMD) {
+  } else if (DEBUG_SERIALCMD) {
     String str = "/DEBUG/LASER/exec/event/ERROR/";
     str += cmds->event;
     str += "/";
