@@ -38,8 +38,13 @@ const byte SERVOS[]    = {12, 11, 10,  9,  8};
 #define PIN_TEMP_ROOM      A1
 
 
+
 const byte NUM_LASERS  = sizeof(LASERS) / sizeof(*LASERS);
 const byte NUM_SERVOS  = sizeof(SERVOS) / sizeof(*SERVOS);
+
+#define CODE_ALL_LASERS (99)
+#define CODE_ALL_SERVOS (99)
+
 
 #define MAX_SERVO_ANGLE 179
 #define MIDLE_SERVO_ANGLE (MAX_SERVO_ANGLE/2)

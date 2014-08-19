@@ -71,7 +71,6 @@ byte servoCmdEvent(Cmd cmd) {
 }
 
 byte laserCmdEvent(Cmd cmds) {
-  bool res = cmds->id >= 0 && cmds->id < NUM_LASERS;
   if (DEBUG_SERIALCMD) {
     String str = "/DEBUG/LASER/exec/event/";
     str += cmds->event;
@@ -81,10 +80,17 @@ byte laserCmdEvent(Cmd cmds) {
     str += LASERS[cmds->id];
     Serial.println(str);
   }
-
-  if (res)
+  
+  bool status = false;
+  if (cmds->id >= 0 && cmds->id < NUM_LASERS) {
     digitalWrite(LASERS[cmds->id], cmds->event);
-  else if (DEBUG_SERIALCMD) {
+    status =  true;
+  } else if (cmds->id == CODE_ALL_LASERS) {
+    for (byte b = 0; b < NUM_LASERS; b++) {
+      digitalWrite(LASERS[b], cmds->event);
+    }
+    status = true;
+  }else if (DEBUG_SERIALCMD) {
     String str = "/DEBUG/LASER/exec/event/ERROR/";
     str += cmds->event;
     str += "/";
@@ -95,7 +101,7 @@ byte laserCmdEvent(Cmd cmds) {
     Serial.println(str);
   }
 
-  return res;
+  return status;
 }
 
 bool parseSerialLaserCmd() {
@@ -114,9 +120,9 @@ bool parseSerialLaserCmd() {
     c = (char)Serial.read();
   } else return false;
 
-if (DEBUG_SERIALCMD) {
+  if (DEBUG_SERIALCMD) {
     String str = "/DEBUG/LASER/cmd/";
-    str += (c == 'N' || c == 'n')?"on":"off";
+    str += (c == 'N' || c == 'n') ? "on" : "off";
     str += "/";
     Serial.println(str);
   }
@@ -127,7 +133,7 @@ if (DEBUG_SERIALCMD) {
     str += "OK/";
     str += cmds->id;
     str += "/";
-    str += cmds->event?"ON":"OFF" ;
+    str += cmds->event ? "ON" : "OFF" ;
     str += "/OK/";
   } else {
     str += "ERROR/";
