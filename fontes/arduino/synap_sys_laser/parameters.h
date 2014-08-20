@@ -52,7 +52,7 @@ const byte NUM_SERVOS  = sizeof(SERVOS) / sizeof(*SERVOS);
 #define DELAY_TEMP_INTER_READ    (10 * 1000) // delay em microsegundos
 #define DELAY_SETUP_INTER_LASERS (50)
 
-#define DELAY_SERIAL_CMD   (3)
+#define DELAY_SERIAL_CMD   (1)
 #define TIMEOUT_SERIAL_CMD (6)
 
 
