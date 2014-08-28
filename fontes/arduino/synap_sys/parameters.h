@@ -20,7 +20,7 @@ const byte LEDS[]    = {A5};
 #elif defined(__AVR_ATmega2560__)  || defined(__AVR_ATmega1280__)  // Arduino Mega e Variantes
 //#elif defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_MEGA2560)
 #define SYNAP_SYS_BOARD "Arduino MEGA"
-const byte PINS[]    = {2, 3, 4, 5, 6, 7, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37};
+const byte PINS[]    = {24, 30, 4, 5, 7, 22, 28, 23, 29, 33, 27, 35, 2, 3, 6, 37, 26, 32, 31, 25, 34};
 const byte POTS[]    = {A1, A2, A3, A4};
 const byte LEDS[]    = {36, 38, 39, 40};
 #elif defined(__AVR_ATmega328P__) // Arduino UNO
